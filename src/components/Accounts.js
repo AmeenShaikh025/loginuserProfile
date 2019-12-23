@@ -1,18 +1,10 @@
 import React, { Component } from "react";
 
-// import Dashboard from "./Dashboard";
-
 import { connect } from "react-redux";
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  withRouter
-} from "react-router-dom";
-
 import { fetchUser } from "../actions/authAction";
+
+import { withRouter } from "react-router-dom";
 
 class Accounts extends Component {
   componentDidMount() {
@@ -24,16 +16,26 @@ class Accounts extends Component {
     this.props.dispatch(fetchUser());
   }
 
-  routeChange() {
-    let path = `newPath`;
-    this.props.history.push(path);
+  //On click redirect to new page
+  routeChange(data) {
+    let { history } = this.props;
+    history.push({
+      pathname: "/dashboard",
+      state: { ...data }
+    });
   }
 
   render() {
     const allUsers = this.props.data.users;
     const userlist = allUsers.map(user => {
       return (
-        <div className="item" key={user.id} onClick={this.routeChange}>
+        <div
+          className="item"
+          key={user.id}
+          onClick={() => {
+            this.routeChange(user);
+          }}
+        >
           <i className="large github middle aligned icon"></i>
           <div className="content">
             <div className="header">{user.name}</div>
@@ -64,5 +66,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(Accounts);
-// export default withRouter(connect(mapStateToProps, null)(Accounts));
+export default connect(mapStateToProps, null)(withRouter(Accounts));
